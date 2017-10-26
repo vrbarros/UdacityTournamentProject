@@ -18,13 +18,13 @@ DROP TABLE IF EXISTS players CASCADE;
 DROP TABLE IF EXISTS matches CASCADE;
 
 
-CREATE TABLE players ( id SERIAL PRIMARY KEY,
-                                         name TEXT NOT NULL);
+CREATE TABLE players (id SERIAL PRIMARY KEY,
+                                        name TEXT NOT NULL);
 
 
-CREATE TABLE matches ( id SERIAL PRIMARY KEY,
-                                         winner INT REFERENCES players(id),
-                                                               loser INT REFERENCES players(id));
+CREATE TABLE matches (id SERIAL PRIMARY KEY,
+                                        winner INT REFERENCES players(id),
+                                                              loser INT REFERENCES players(id));
 
 
 CREATE VIEW COUNT AS

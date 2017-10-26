@@ -15,9 +15,7 @@ I made this program made as part of Udacity Fullstack Development Nanodegree cou
 1) In Vagrant folder, start vagrant using command`vagrant up`
 2) You have to connect to vagrant using command `vagrant ssh`
 3) Run psql using command `psql`
-4) Create the database tournament `CREATE DATABASE tournament;`
-5) Now, connect to the database using command `\c tournament`
-6) Create all tables using script and command `\i tournament.sql`
-7) Exit psql using command `\q`
-8) Go to tournament directory using command `cd /vagrant/tournament/`
-9) Run tests to validate the project `python tournament_test.py`
+4) Create database and all tables using script and command `\i tournament.sql`
+5) Exit psql using command `\q`
+6) Go to tournament directory using command `cd /vagrant/tournament/`
+7) Run tests to validate the project `python tournament_test.py`

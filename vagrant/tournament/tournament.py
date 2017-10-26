@@ -8,25 +8,29 @@ import psycopg2
 
 def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
-    return psycopg2.connect("dbname=tournament")
+    try:
+        return psycopg2.connect("dbname=tournament")
+    except Exception as e:
+        print("Error connecting the database. Check database file.")
+
+
+def executeQuery(query):
+    """Improve the code executing queries."""
+    db = connect()
+    cur = db.cursor()
+    cur.execute(query)
+    db.commit()
+    db.close()
 
 
 def deleteMatches():
     """Remove all the match records from the database."""
-    db = connect()
-    cur = db.cursor()
-    cur.execute("DELETE FROM matches;")
-    db.commit()
-    db.close()
+    executeQuery("DELETE FROM matches;")
 
 
 def deletePlayers():
     """Remove all the player records from the database."""
-    db = connect()
-    cur = db.cursor()
-    cur.execute("DELETE FROM players;")
-    db.commit()
-    db.close()
+    executeQuery("DELETE FROM players;")
 
 
 def countPlayers():
@@ -48,11 +52,8 @@ def registerPlayer(name):
       name: the player's full name (need not be unique).
 
     """
-    db = connect()
-    cur = db.cursor()
-    cur.execute("INSERT INTO players (name) VALUES (%s);", (name,))
-    db.commit()
-    db.close()
+
+    executeQuery("INSERT INTO players (name) VALUES (%s);", (name,))
 
 
 def playerStandings():
@@ -85,12 +86,9 @@ def reportMatch(winner, loser):
       loser:  the id number of the player who lost
 
     """
-    db = connect()
-    cur = db.cursor()
-    cur.execute("INSERT INTO matches (winner, loser) VALUES ( \
-        {0}, {1});".format(winner, loser))
-    db.commit()
-    db.close()
+    executeQuery(
+        "INSERT INTO matches (winner, loser) VALUES ({%s}, {%s});", (winner,
+                                                                     loser, ))
 
 
 def swissPairings():
@@ -108,13 +106,10 @@ def swissPairings():
         name2: the second player's name
 
     """
-    db = connect()
-    cur = db.cursor()
-    cur.execute("SELECT player.id, player.name, opponent.id, opponent.name \
-        FROM standings player, standings opponent \
-        WHERE player.wins = opponent.wins \
-        AND player.id < opponent.id;")
-    _pairs = cur.fetchall()
-    db.close()
+    # Get only the id and name from the player standings
+    _stand = [(line[0], line[1]) for line in playerStandings()]
+
+    # Add every other zipped row tuple from standings
+    _pairs = [(line[0] + line[1]) for line in zip(_stand[::2], _stand[1::2])]
 
     return _pairs
