@@ -14,23 +14,22 @@ def connect():
         print("Error connecting the database. Check database file.")
 
 
-def executeQuery(query):
-    """Improve the code executing queries."""
+def deleteMatches():
+    """Remove all the match records from the database."""
     db = connect()
     cur = db.cursor()
-    cur.execute(query)
+    cur.execute("DELETE FROM matches;")
     db.commit()
     db.close()
 
 
-def deleteMatches():
-    """Remove all the match records from the database."""
-    executeQuery("DELETE FROM matches;")
-
-
 def deletePlayers():
     """Remove all the player records from the database."""
-    executeQuery("DELETE FROM players;")
+    db = connect()
+    cur = db.cursor()
+    cur.execute("DELETE FROM players;")
+    db.commit()
+    db.close()
 
 
 def countPlayers():
@@ -52,8 +51,11 @@ def registerPlayer(name):
       name: the player's full name (need not be unique).
 
     """
-
-    executeQuery("INSERT INTO players (name) VALUES (%s);", (name,))
+    db = connect()
+    cur = db.cursor()
+    cur.execute("INSERT INTO players (name) VALUES (%s);", (name,))
+    db.commit()
+    db.close()
 
 
 def playerStandings():
@@ -86,9 +88,10 @@ def reportMatch(winner, loser):
       loser:  the id number of the player who lost
 
     """
-    executeQuery(
-        "INSERT INTO matches (winner, loser) VALUES ({%s}, {%s});", (winner,
-                                                                     loser, ))
+    db = connect()
+    cur = db.cursor()
+    cur.execute(
+        "INSERT INTO matches (winner, loser) VALUES ({%s}, {%s});", (winner, loser, ))
 
 
 def swissPairings():
